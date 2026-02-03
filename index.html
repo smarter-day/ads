@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ads Engine Scenarios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <header class="border-b border-white/10">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+        <div>
+          <p class="text-sm uppercase tracking-[0.3em] text-slate-400">
+            Smarter.day
+          </p>
+          <h1 class="text-2xl font-semibold">Ads Script Scenarios</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            class="rounded-full border border-white/20 px-4 py-2 text-sm text-slate-200 hover:bg-white/10"
+          >
+            Refresh
+          </button>
+          <button class="rounded-full bg-indigo-500 px-4 py-2 text-sm">
+            Start Campaign
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-10">
+      <section class="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h2 class="text-lg font-semibold">Hero Content + In-Content Ad</h2>
+          <p class="mt-2 text-sm text-slate-300">
+            This slot checks the basic in-content banner behavior inside a
+            typical editorial layout.
+          </p>
+          <div class="mt-6 grid gap-4 md:grid-cols-2">
+            <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+              <p class="text-xs uppercase text-slate-400">Latest Insight</p>
+              <p class="mt-2 text-base font-medium">
+                iOS acquisition pipeline trends in Q1
+              </p>
+              <p class="mt-2 text-sm text-slate-400">
+                Compare creative variants with the live ad slot below.
+              </p>
+              <button class="mt-4 rounded-lg bg-white/10 px-3 py-2 text-xs">
+                Open Report
+              </button>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+              <p class="text-xs uppercase text-slate-400">Campaign Notes</p>
+              <ul class="mt-2 space-y-2 text-sm text-slate-300">
+                <li>High intent audience segment</li>
+                <li>Focus on iOS exclusive offer</li>
+                <li>Popup delay at 2 seconds</li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-6 rounded-xl border border-dashed border-white/30 p-4">
+            <p class="text-xs uppercase text-slate-400">Ad Slot A</p>
+            <div
+              id="ad-slot"
+              class="mt-3 h-[250px] w-full overflow-hidden rounded-lg bg-white/5"
+            ></div>
+          </div>
+        </div>
+
+        <aside class="flex flex-col gap-4">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <h3 class="text-sm uppercase tracking-wide text-slate-400">
+              Sidebar
+            </h3>
+            <p class="mt-2 text-base font-semibold">Performance Overview</p>
+            <div class="mt-4 space-y-3 text-sm text-slate-300">
+              <div class="flex items-center justify-between">
+                <span>CTR</span>
+                <span class="font-semibold text-emerald-300">3.2%</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>Installs</span>
+                <span class="font-semibold">1,204</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>Spend</span>
+                <span class="font-semibold">$4,280</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <p class="text-xs uppercase text-slate-400">CTA Stack</p>
+            <div class="mt-4 space-y-3">
+              <button class="w-full rounded-lg bg-indigo-500 px-3 py-2 text-sm">
+                Preview Landing Page
+              </button>
+              <button
+                class="w-full rounded-lg border border-white/20 px-3 py-2 text-sm text-slate-200"
+              >
+                Update Creative
+              </button>
+              <button
+                class="w-full rounded-lg border border-white/20 px-3 py-2 text-sm text-slate-200"
+              >
+                Export Summary
+              </button>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="grid gap-6 lg:grid-cols-3">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="text-base font-semibold">Scenario: Tall Content</h3>
+          <p class="mt-2 text-sm text-slate-300">
+            This block simulates long-form content with a compact ad area.
+          </p>
+          <div class="mt-4 space-y-3 text-sm text-slate-400">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
+              commodo dolor eu velit suscipit, sit amet mattis urna pharetra.
+            </p>
+            <p>
+              Integer a arcu et lorem feugiat aliquet. Sed id metus at erat
+              ullamcorper consequat eget at lorem.
+            </p>
+            <p>
+              Morbi quis ex sed felis tristique luctus eget non purus. Etiam
+              egestas leo in magna commodo, id tincidunt risus sodales.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="text-base font-semibold">Scenario: Compact Card</h3>
+          <p class="mt-2 text-sm text-slate-300">
+            Use this space to verify the ad script with minimal layout width.
+          </p>
+          <div class="mt-4 rounded-xl border border-dashed border-white/30 p-4">
+            <p class="text-xs uppercase text-slate-400">Ad Slot B</p>
+            <div
+              id="ad-slot-2"
+              class="mt-3 h-[200px] w-full overflow-hidden rounded-lg bg-white/5"
+            ></div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="text-base font-semibold">Scenario: Grid Cards</h3>
+          <p class="mt-2 text-sm text-slate-300">
+            Multiple cards with a slot nested inside a grid layout.
+          </p>
+          <div class="mt-4 grid gap-3">
+            <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+              <p class="text-xs uppercase text-slate-400">Feature A</p>
+              <p class="mt-2 text-sm">Retargeting warm iOS users.</p>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+              <p class="text-xs uppercase text-slate-400">Feature B</p>
+              <p class="mt-2 text-sm">Spotlight in-content creatives.</p>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+              <p class="text-xs uppercase text-slate-400">Ad Slot C</p>
+              <div
+                id="ad-slot-3"
+                class="mt-3 h-[160px] w-full overflow-hidden rounded-lg bg-white/5"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <h3 class="text-base font-semibold">Scenario: Footer Banner</h3>
+        <p class="mt-2 text-sm text-slate-300">
+          A full-width placement to validate the banner in a wider container.
+        </p>
+        <div class="mt-4 rounded-xl border border-dashed border-white/30 p-4">
+          <p class="text-xs uppercase text-slate-400">Ad Slot D</p>
+          <div
+            id="ad-slot-4"
+            class="mt-3 h-[250px] w-full overflow-hidden rounded-lg bg-white/5"
+          ></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-white/10">
+      <div
+        class="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-8 text-sm text-slate-400 md:flex-row md:items-center md:justify-between"
+      >
+        <p>Debug layout for iOS ads behavior.</p>
+        <div class="flex gap-3">
+          <a class="hover:text-white" href="#">Docs</a>
+          <a class="hover:text-white" href="#">Status</a>
+          <a class="hover:text-white" href="#">Support</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Set config URL (for local testing, use example config) -->
+    <script>
+      window.AD_CONFIG_URL = "./configs/example.config.js";
+    </script>
+    <script src="./index.js"></script>
+  </body>
+</html>
