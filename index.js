@@ -41,13 +41,48 @@
   // Use screen width to choose between mobile/desktop image URLs
   const isSmallScreen = window.innerWidth < 768;
   const CURRENT_YEAR = new Date().getFullYear();
+  const POPUP_LAST_SHOWN_KEY = "smarter_day_popup_last_shown_at";
+
+  function getPopupCooldownMs(config) {
+    const hours = Number(config?.showEveryHours);
+    const safeHours = Number.isFinite(hours) && hours > 0 ? hours : 1;
+    return safeHours * 60 * 60 * 1000;
+  }
+
+  function canShowPopup(config) {
+    try {
+      const raw = localStorage.getItem(
+        config?.localStorageKey || POPUP_LAST_SHOWN_KEY
+      );
+      if (!raw) return true;
+      const lastShownAt = Number(raw);
+      if (!Number.isFinite(lastShownAt)) return true;
+      return Date.now() - lastShownAt >= getPopupCooldownMs(config);
+    } catch (error) {
+      // If storage is unavailable, do not block popup display.
+      return true;
+    }
+  }
+
+  function markPopupShown(config) {
+    try {
+      localStorage.setItem(
+        config?.localStorageKey || POPUP_LAST_SHOWN_KEY,
+        String(Date.now())
+      );
+    } catch (error) {
+      // Ignore storage failures (private mode / blocked storage).
+    }
+  }
 
   function init(config) {
     Object.keys(config).forEach((selector) => {
       const slotConfig = config[selector];
 
       if (selector === "popup") {
-        setTimeout(() => createPopup(slotConfig), slotConfig.delay || 0);
+        if (canShowPopup(slotConfig)) {
+          setTimeout(() => createPopup(slotConfig), slotConfig.delay || 0);
+        }
       } else {
         const containers = document.querySelectorAll(selector);
         containers.forEach((container) => mountAd(container, slotConfig));
@@ -167,7 +202,10 @@
   }
 
   function createPopup(config) {
+    markPopupShown(config);
+
     const overlay = document.createElement("div");
+    overlay.className = "smarter-day-popup-overlay";
     Object.assign(overlay.style, {
       position: "fixed",
       top: 0,
@@ -181,6 +219,13 @@
       alignItems: "center",
       opacity: 0,
       transition: "opacity 0.3s",
+      userSelect: "none",
+      WebkitUserSelect: "none",
+      WebkitTouchCallout: "none",
+    });
+
+    overlay.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
     });
 
     const content = document.createElement("div");
@@ -194,10 +239,17 @@
       alignItems: "stretch",
       gap: "0",
       background: "transparent",
+      userSelect: "none",
+      WebkitUserSelect: "none",
+      WebkitTouchCallout: "none",
     });
 
     const close = document.createElement("button");
-    close.innerHTML = "&times;";
+    const closeDelayMs = config.closeDelay ?? 5000;
+    const countdownSeconds = Math.max(0, Math.ceil(closeDelayMs / 1000));
+    let remainingSeconds = countdownSeconds;
+    let canClose = remainingSeconds === 0;
+    close.textContent = canClose ? "✕" : String(remainingSeconds);
     Object.assign(close.style, {
       position: "absolute",
       top: "-15px",
@@ -213,18 +265,34 @@
       fontWeight: "bold",
       zIndex: 10,
       boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-      opacity: 0,
-      pointerEvents: "none",
-      transition: "opacity 0.3s ease",
+      opacity: 1,
+      pointerEvents: canClose ? "auto" : "none",
+      transition: "transform 0.2s ease",
     });
-    close.onclick = () => {
+    const closePopup = () => {
+      if (!canClose || !overlay.parentNode) return;
       overlay.style.opacity = 0;
-      setTimeout(() => document.body.removeChild(overlay), 300);
+      setTimeout(() => {
+        if (overlay.parentNode) {
+          document.body.removeChild(overlay);
+        }
+      }, 300);
     };
-    setTimeout(() => {
-      close.style.opacity = 1;
-      close.style.pointerEvents = "auto";
-    }, 5000);
+    close.onclick = closePopup;
+
+    if (!canClose) {
+      const countdownInterval = setInterval(() => {
+        remainingSeconds -= 1;
+        if (remainingSeconds <= 0) {
+          canClose = true;
+          close.textContent = "✕";
+          close.style.pointerEvents = "auto";
+          clearInterval(countdownInterval);
+          return;
+        }
+        close.textContent = String(remainingSeconds);
+      }, 1000);
+    }
 
     content.appendChild(close);
 

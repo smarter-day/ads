@@ -103,6 +103,7 @@
     // Demonstrates: all popup features including rotating titles
     popup: {
       delay: 5000, // Show after 5 seconds
+      showEveryHours: 1, // Show popup at most once per hour
       interval: 5000, // Rotate images every 5 seconds
       effect: "fade", // Fade transition for images
       titleInterval: 4000, // Rotate titles every 4 seconds

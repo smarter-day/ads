@@ -6,7 +6,7 @@
       delay: 5000,
       interval: 5000,
       effect: "fade",
-      titleInterval: 4000,
+      titleInterval: 5000,
       titles: [
         "The Only Planner You Need. Tasks, Calendar & Habits in One Flow.",
         "All Premium Features, 100% Free. The Smarter Way to Plan.",
