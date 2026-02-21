@@ -44,7 +44,7 @@ https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/YOUR_NAME.co
 **Example:**
 
 ```text
-https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/petr.config.js
+https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/foodshelf.life.config.js
 ```
 
 ### Step 2: Add Scripts to Your Website
@@ -333,10 +333,10 @@ ads/
 │   └── workflows/
 │       └── build.yml       # CI/CD pipeline
 ├── configs/
-│   └── petr.config.js      # Partner configurations (source)
+│   └── foodshelf.life.config.js      # Partner configurations (source)
 ├── dist/
 │   ├── configs/
-│   │   └── petr.config.js  # Minified configs (auto-generated)
+│   │   └── foodshelf.life.config.js  # Minified configs (auto-generated)
 │   ├── index.html          # Minified test page
 │   └── index.js            # Minified ads engine
 ├── build.mjs               # Build script
@@ -370,7 +370,7 @@ Located at `.github/workflows/build.yml`.
 1. **Create the config file:**
 
    ```bash
-   cp configs/petr.config.js configs/partner-name.config.js
+   cp configs/foodshelf.life.config.js configs/partner-name.config.js
    ```
 
 2. **Customize the configuration:**

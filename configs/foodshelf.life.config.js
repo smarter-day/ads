@@ -19,14 +19,14 @@
             "https://smarter.day/hs-fs/hubfs/Screenshots/Day%20Structure/001/light.webp?width=3368&height=6870&name=light.webp",
           mobile:
             "https://smarter.day/hs-fs/hubfs/Screenshots/Day%20Structure/001/light.webp?width=3368&height=6870&name=light.webp",
-          link: "https://apps.apple.com/app/apple-store/id6736619323?pt=127277764&ct=petr&mt=8",
+          link: "https://apps.apple.com/app/apple-store/id6736619323?pt=127277764&ct=foodshelf.life&mt=8",
         },
         {
           desktop:
             "https://smarter.day/hs-fs/hubfs/Screenshots/Day%20Structure/002/light.webp?width=3368&height=6870&name=light.webp",
           mobile:
             "https://smarter.day/hs-fs/hubfs/Screenshots/Day%20Structure/002/light.webp?width=3368&height=6870&name=light.webp",
-          link: "https://apps.apple.com/app/apple-store/id6736619323?pt=127277764&ct=petr&mt=8",
+          link: "https://apps.apple.com/app/apple-store/id6736619323?pt=127277764&ct=foodshelf.life&mt=8",
         },
       ],
     },

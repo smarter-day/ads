@@ -360,13 +360,145 @@
     adWrapper.style.display = "flex";
     adWrapper.style.background = "#ffffff";
     adWrapper.style.borderRadius = "0 0 16px 16px";
-    adWrapper.style.padding = "12px";
+    adWrapper.style.padding = "0";
     adWrapper.style.boxSizing = "border-box";
+    adWrapper.style.boxShadow =
+      "0 24px 48px rgba(15, 23, 42, 0.25), inset 0 0 0 1px rgba(148, 163, 184, 0.22)";
+
+    const adViewport = document.createElement("div");
+    Object.assign(adViewport.style, {
+      position: "relative",
+      width: "100%",
+      height: "100%",
+      padding: "12px 0",
+      boxSizing: "border-box",
+      background: "transparent",
+      zIndex: "4",
+    });
+
+    const adMedia = document.createElement("div");
+    Object.assign(adMedia.style, {
+      position: "relative",
+      width: "100%",
+      height: "100%",
+      overflow: "hidden",
+      borderRadius: "0 0 12px 12px",
+      background: "transparent",
+    });
+
     if (config.effect === "slide") {
-      mountSlider(adWrapper, config);
+      mountSlider(adMedia, config);
     } else {
-      mountFader(adWrapper, config);
+      mountFader(adMedia, config);
     }
+
+    const sideFx = document.createElement("div");
+    Object.assign(sideFx.style, {
+      position: "absolute",
+      inset: "12px 0",
+      borderRadius: "0 0 12px 12px",
+      overflow: "hidden",
+      pointerEvents: "none",
+      zIndex: "2",
+    });
+
+    const premiumFx = document.createElement("div");
+    Object.assign(premiumFx.style, {
+      position: "absolute",
+      inset: "12px 0",
+      borderRadius: "0 0 12px 12px",
+      overflow: "hidden",
+      pointerEvents: "none",
+      zIndex: "6",
+    });
+
+    const leftGlow = document.createElement("div");
+    Object.assign(leftGlow.style, {
+      position: "absolute",
+      top: "-10%",
+      left: "-52%",
+      width: "58%",
+      height: "120%",
+      background:
+        "radial-gradient(circle at 18% 50%, rgba(14,165,233,0.5) 0%, rgba(14,165,233,0.35) 28%, rgba(14,165,233,0) 58%)",
+      filter: "blur(4px)",
+      opacity: "1",
+    });
+    leftGlow.style.zIndex = "1";
+
+    const rightGlow = document.createElement("div");
+    Object.assign(rightGlow.style, {
+      position: "absolute",
+      top: "-10%",
+      right: "-52%",
+      width: "58%",
+      height: "120%",
+      background:
+        "radial-gradient(circle at 82% 50%, rgba(236,72,153,0.48) 0%, rgba(236,72,153,0.32) 28%, rgba(236,72,153,0) 58%)",
+      filter: "blur(4px)",
+      opacity: "1",
+    });
+    rightGlow.style.zIndex = "1";
+
+    const sheen = document.createElement("div");
+    Object.assign(sheen.style, {
+      position: "absolute",
+      top: "-35%",
+      left: "-60%",
+      width: "45%",
+      height: "170%",
+      transform: "rotate(14deg)",
+      background:
+        "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 48%, rgba(255,255,255,0) 100%)",
+      opacity: "1",
+      zIndex: "3",
+    });
+
+    sideFx.appendChild(leftGlow);
+    sideFx.appendChild(rightGlow);
+    premiumFx.appendChild(sheen);
+    adWrapper.appendChild(sideFx);
+    adWrapper.appendChild(premiumFx);
+    adViewport.appendChild(adMedia);
+    adWrapper.appendChild(adViewport);
+
+    leftGlow.animate(
+      [
+        { transform: "translateX(-12%) scale(0.98)", opacity: 0.68 },
+        { transform: "translateX(14%) scale(1.04)", opacity: 1 },
+      ],
+      {
+        duration: 2800,
+        iterations: Infinity,
+        direction: "alternate",
+        easing: "ease-in-out",
+      }
+    );
+
+    rightGlow.animate(
+      [
+        { transform: "translateX(12%) scale(0.98)", opacity: 0.68 },
+        { transform: "translateX(-14%) scale(1.04)", opacity: 1 },
+      ],
+      {
+        duration: 2800,
+        iterations: Infinity,
+        direction: "alternate",
+        easing: "ease-in-out",
+      }
+    );
+
+    sheen.animate(
+      [
+        { transform: "translateX(-25%) rotate(14deg)", opacity: 0.56 },
+        { transform: "translateX(350%) rotate(14deg)", opacity: 1 },
+      ],
+      {
+        duration: 2600,
+        iterations: Infinity,
+        easing: "ease-in-out",
+      }
+    );
 
     content.appendChild(adWrapper);
     overlay.appendChild(content);
