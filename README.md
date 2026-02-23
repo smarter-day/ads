@@ -47,6 +47,8 @@ https://static-ads.smarter.day/configs/YOUR_NAME.config.js
 https://static-ads.smarter.day/configs/foodshelf.life.config.js
 ```
 
+In all integration snippets below, the cache-busting value is generated in JavaScript from the current date (`YYYYMMDD`) and appended as `?v=<date>`.
+
 ### Step 2: Add Scripts to Your Website
 
 Choose the integration method that best fits your technology stack.
@@ -58,9 +60,14 @@ Add these script tags before the closing `</body>` tag:
 ```html
 <!-- Smarter.day Ads Engine -->
 <script>
-  window.AD_CONFIG_URL = "https://static-ads.smarter.day/configs/YOUR_NAME.config.js";
+  const adsVersion = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  window.AD_CONFIG_URL = `https://static-ads.smarter.day/configs/YOUR_NAME.config.js?v=${adsVersion}`;
+
+  const adsScript = document.createElement("script");
+  adsScript.src = `https://static-ads.smarter.day/index.js?v=${adsVersion}`;
+  adsScript.async = true;
+  document.body.appendChild(adsScript);
 </script>
-<script src="https://static-ads.smarter.day/index.js"></script>
 ```
 
 #### Option B: React / Next.js
@@ -75,17 +82,19 @@ export default function AdsEngine() {
   return (
     <>
       <Script
-        id="ads-config"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `window.AD_CONFIG_URL = "https://static-ads.smarter.day/configs/YOUR_NAME.config.js";`,
-        }}
-      />
-      <Script
-        id="ads-engine"
-        src="https://static-ads.smarter.day/index.js"
+        id="ads-engine-loader"
         strategy="afterInteractive"
-      />
+      >{`
+        (() => {
+          const adsVersion = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+          window.AD_CONFIG_URL = "https://static-ads.smarter.day/configs/YOUR_NAME.config.js?v=" + adsVersion;
+
+          const script = document.createElement("script");
+          script.src = "https://static-ads.smarter.day/index.js?v=" + adsVersion;
+          script.async = true;
+          document.body.appendChild(script);
+        })();
+      `}</Script>
     </>
   );
 }
@@ -99,11 +108,12 @@ import { useEffect } from "react";
 
 export default function AdsEngine() {
   useEffect(() => {
+    const adsVersion = new Date().toISOString().slice(0, 10).replace(/-/g, "");
     window.AD_CONFIG_URL =
-      "https://static-ads.smarter.day/configs/YOUR_NAME.config.js";
+      `https://static-ads.smarter.day/configs/YOUR_NAME.config.js?v=${adsVersion}`;
 
     const script = document.createElement("script");
-    script.src = "https://static-ads.smarter.day/index.js";
+    script.src = `https://static-ads.smarter.day/index.js?v=${adsVersion}`;
     script.async = true;
     document.body.appendChild(script);
 
@@ -125,11 +135,12 @@ Include the component in your layout or root component.
 ```typescript
 export default defineNuxtPlugin(() => {
   if (typeof window !== "undefined") {
+    const adsVersion = new Date().toISOString().slice(0, 10).replace(/-/g, "");
     window.AD_CONFIG_URL =
-      "https://static-ads.smarter.day/configs/YOUR_NAME.config.js";
+      `https://static-ads.smarter.day/configs/YOUR_NAME.config.js?v=${adsVersion}`;
 
     const script = document.createElement("script");
-    script.src = "https://static-ads.smarter.day/index.js";
+    script.src = `https://static-ads.smarter.day/index.js?v=${adsVersion}`;
     script.async = true;
     document.body.appendChild(script);
   }
@@ -146,10 +157,12 @@ export function useAdsEngine(configUrl: string) {
   let script: HTMLScriptElement | null = null;
 
   onMounted(() => {
-    window.AD_CONFIG_URL = configUrl;
+    const adsVersion = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const separator = configUrl.includes("?") ? "&" : "?";
+    window.AD_CONFIG_URL = `${configUrl}${separator}v=${adsVersion}`;
 
     script = document.createElement("script");
-    script.src = "https://static-ads.smarter.day/index.js";
+    script.src = `https://static-ads.smarter.day/index.js?v=${adsVersion}`;
     script.async = true;
     document.body.appendChild(script);
   });
