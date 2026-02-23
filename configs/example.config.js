@@ -10,12 +10,20 @@
   const APP_STORE_LINK =
     "https://apps.apple.com/app/apple-store/id6736619323?pt=127277764&ct=example&mt=8";
 
-  const SCREENSHOTS = {
-    light1:
-      "https://smarter.day/hs-fs/hubfs/Screenshots/Day%20Structure/001/light.webp?width=3368&height=6870&name=light.webp",
-    light2:
-      "https://smarter.day/hs-fs/hubfs/Screenshots/Day%20Structure/002/light.webp?width=3368&height=6870&name=light.webp",
-  };
+  const SCREENSHOTS = [
+    "images/daily,planner,today,tasks,habits,ios,app,screenshot,01.png",
+    "images/daily,planner,timeline,schedule,timeblocking,ios,app,screenshot,02.png",
+    "images/daily,planner,habit,tracker,workout,meditation,ios,app,screenshot,03.png",
+    "images/daily,planner,event,duration,editor,ios,app,screenshot,05.png",
+    "images/habit-tracker,planner,todo-list.png",
+    "images/productivity,inbox,tasks,list,priorities,ios,app,screenshot,09.png",
+  ];
+
+  const ALL_SLIDES = SCREENSHOTS.map((image) => ({
+    desktop: image,
+    mobile: image,
+    link: APP_STORE_LINK,
+  }));
 
   window.AD_CONFIG = {
     // =========================================================================
@@ -25,18 +33,7 @@
     "#ad-slot": {
       interval: 4000, // Rotate every 4 seconds
       effect: "fade", // Smooth fade transition
-      slides: [
-        {
-          desktop: SCREENSHOTS.light1,
-          mobile: SCREENSHOTS.light1,
-          link: APP_STORE_LINK,
-        },
-        {
-          desktop: SCREENSHOTS.light2,
-          mobile: SCREENSHOTS.light2,
-          link: APP_STORE_LINK,
-        },
-      ],
+      slides: ALL_SLIDES,
     },
 
     // =========================================================================
@@ -44,15 +41,9 @@
     // =========================================================================
     // Demonstrates: single image, no rotation (interval: 0)
     "#ad-slot-2": {
-      interval: 0, // No rotation - static image
+      interval: 3000, // Rotate to showcase full image set
       effect: "fade",
-      slides: [
-        {
-          desktop: SCREENSHOTS.light1,
-          mobile: SCREENSHOTS.light1,
-          link: APP_STORE_LINK,
-        },
-      ],
+      slides: ALL_SLIDES,
     },
 
     // =========================================================================
@@ -62,18 +53,7 @@
     "#ad-slot-3": {
       interval: 3000, // Rotate every 3 seconds
       effect: "slide", // Horizontal slide transition
-      slides: [
-        {
-          desktop: SCREENSHOTS.light1,
-          mobile: SCREENSHOTS.light1,
-          link: APP_STORE_LINK,
-        },
-        {
-          desktop: SCREENSHOTS.light2,
-          mobile: SCREENSHOTS.light2,
-          link: APP_STORE_LINK,
-        },
-      ],
+      slides: ALL_SLIDES,
     },
 
     // =========================================================================
@@ -83,18 +63,7 @@
     "#ad-slot-4": {
       interval: 6000, // Rotate every 6 seconds (slower)
       effect: "fade",
-      slides: [
-        {
-          desktop: SCREENSHOTS.light1,
-          mobile: SCREENSHOTS.light1,
-          link: APP_STORE_LINK,
-        },
-        {
-          desktop: SCREENSHOTS.light2,
-          mobile: SCREENSHOTS.light2,
-          link: APP_STORE_LINK,
-        },
-      ],
+      slides: ALL_SLIDES,
     },
 
     // =========================================================================
@@ -113,18 +82,7 @@
         "Stop Overthinking. Start Doing. The Daily Planner for Focus.",
         `The ${CURRENT_YEAR} Productivity Standard. Simple, Fast, and Free.`,
       ],
-      slides: [
-        {
-          desktop: SCREENSHOTS.light1,
-          mobile: SCREENSHOTS.light1,
-          link: APP_STORE_LINK,
-        },
-        {
-          desktop: SCREENSHOTS.light2,
-          mobile: SCREENSHOTS.light2,
-          link: APP_STORE_LINK,
-        },
-      ],
+      slides: ALL_SLIDES,
     },
   };
 })();

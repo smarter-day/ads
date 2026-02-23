@@ -35,16 +35,16 @@ A lightweight, privacy-focused ad engine for displaying targeted advertisements 
 
 ### Step 1: Get Your Config URL
 
-Your personalized config file is located in the `dist/configs/` directory. Use the raw GitHub URL:
+Your personalized config file is located in the `dist/configs/` directory. Use the static host URL:
 
 ```text
-https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/YOUR_NAME.config.js
+https://static-ads.smarter.day/configs/YOUR_NAME.config.js
 ```
 
 **Example:**
 
 ```text
-https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/foodshelf.life.config.js
+https://static-ads.smarter.day/configs/foodshelf.life.config.js
 ```
 
 ### Step 2: Add Scripts to Your Website
@@ -58,9 +58,9 @@ Add these script tags before the closing `</body>` tag:
 ```html
 <!-- Smarter.day Ads Engine -->
 <script>
-  window.AD_CONFIG_URL = "https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/YOUR_NAME.config.js";
+  window.AD_CONFIG_URL = "https://static-ads.smarter.day/configs/YOUR_NAME.config.js";
 </script>
-<script src="https://raw.githubusercontent.com/smarter-day/ads/main/dist/index.js"></script>
+<script src="https://static-ads.smarter.day/index.js"></script>
 ```
 
 #### Option B: React / Next.js
@@ -78,12 +78,12 @@ export default function AdsEngine() {
         id="ads-config"
         strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
-          __html: `window.AD_CONFIG_URL = "https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/YOUR_NAME.config.js";`,
+          __html: `window.AD_CONFIG_URL = "https://static-ads.smarter.day/configs/YOUR_NAME.config.js";`,
         }}
       />
       <Script
         id="ads-engine"
-        src="https://raw.githubusercontent.com/smarter-day/ads/main/dist/index.js"
+        src="https://static-ads.smarter.day/index.js"
         strategy="afterInteractive"
       />
     </>
@@ -100,10 +100,10 @@ import { useEffect } from "react";
 export default function AdsEngine() {
   useEffect(() => {
     window.AD_CONFIG_URL =
-      "https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/YOUR_NAME.config.js";
+      "https://static-ads.smarter.day/configs/YOUR_NAME.config.js";
 
     const script = document.createElement("script");
-    script.src = "https://raw.githubusercontent.com/smarter-day/ads/main/dist/index.js";
+    script.src = "https://static-ads.smarter.day/index.js";
     script.async = true;
     document.body.appendChild(script);
 
@@ -126,10 +126,10 @@ Include the component in your layout or root component.
 export default defineNuxtPlugin(() => {
   if (typeof window !== "undefined") {
     window.AD_CONFIG_URL =
-      "https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/YOUR_NAME.config.js";
+      "https://static-ads.smarter.day/configs/YOUR_NAME.config.js";
 
     const script = document.createElement("script");
-    script.src = "https://raw.githubusercontent.com/smarter-day/ads/main/dist/index.js";
+    script.src = "https://static-ads.smarter.day/index.js";
     script.async = true;
     document.body.appendChild(script);
   }
@@ -149,7 +149,7 @@ export function useAdsEngine(configUrl: string) {
     window.AD_CONFIG_URL = configUrl;
 
     script = document.createElement("script");
-    script.src = "https://raw.githubusercontent.com/smarter-day/ads/main/dist/index.js";
+    script.src = "https://static-ads.smarter.day/index.js";
     script.async = true;
     document.body.appendChild(script);
   });
@@ -313,7 +313,17 @@ This command:
 
 1. Bundles and minifies `index.js` → `dist/index.js`
 2. Minifies all config files in `configs/` → `dist/configs/`
-3. Minifies `index.html` → `dist/index.html`
+3. Optimizes images from `images/` → `dist/images/` as WebP (max 1920x1920)
+4. Rewrites built config image paths (`images/...`) to `https://static-ads.smarter.day/images/...`
+5. Minifies `index.html` → `dist/index.html`
+
+### Image Assets
+
+- Put source screenshots in `images/` and reference them in partner configs as `images/<file>.<ext>`.
+- Supported source formats: `.png`, `.jpg`, `.jpeg`, `.webp`, `.avif`.
+- During build, all supported images are converted to optimized `.webp` and copied to `dist/images/`.
+- Source `configs/*.js` are unchanged for local root testing (`index.html` + `./configs/...` + `./images/...`).
+- Built `dist/configs/*.config.js` get production image URLs: `https://static-ads.smarter.day/images/<file>.webp`.
 
 ### Local Testing
 
@@ -334,9 +344,13 @@ ads/
 │       └── build.yml       # CI/CD pipeline
 ├── configs/
 │   └── foodshelf.life.config.js      # Partner configurations (source)
+├── images/
+│   └── ...                            # Source screenshots (original formats)
 ├── dist/
 │   ├── configs/
 │   │   └── foodshelf.life.config.js  # Minified configs (auto-generated)
+│   ├── images/
+│   │   └── ...                        # Optimized WebP assets (auto-generated)
 │   ├── index.html          # Minified test page
 │   └── index.js            # Minified ads engine
 ├── build.mjs               # Build script
@@ -353,11 +367,22 @@ ads/
 The repository includes a GitHub Actions workflow that automatically:
 
 1. **Triggers** on every push to `main` or `master` branches
-2. **Installs** dependencies using `npm ci`
+2. **Installs** dependencies using `yarn install --frozen-lockfile`
 3. **Builds** and minifies all source files
-4. **Commits** the updated `dist/` folder back to the repository
+4. **Uploads** the `dist/` folder to a Cloudflare R2 bucket (S3-compatible)
 
-This ensures partners always have access to the latest minified files directly from GitHub.
+This ensures partners always have access to the latest minified files from your R2 deployment target.
+
+### Required GitHub Secrets
+
+- `CLOUDFLARE_R2_ACCESS_KEY_ID`
+- `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
+
+### Required GitHub Variables
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_R2_BUCKET`
+- `CLOUDFLARE_R2_PREFIX` (optional folder prefix in the bucket)
 
 ### Workflow File
 
@@ -389,13 +414,15 @@ Located at `.github/workflows/build.yml`.
 4. **Share the integration details:**
 
    Config URL:
+
    ```text
-   https://raw.githubusercontent.com/smarter-day/ads/main/dist/configs/partner-name.config.js
+   https://static-ads.smarter.day/configs/partner-name.config.js
    ```
 
    Engine URL:
+
    ```text
-   https://raw.githubusercontent.com/smarter-day/ads/main/dist/index.js
+   https://static-ads.smarter.day/index.js
    ```
 
 ---

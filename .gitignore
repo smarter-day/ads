@@ -39,6 +39,9 @@ Thumbs.db
 .eslintcache
 *.tsbuildinfo
 
+# Build output
+dist/
+
 # Misc
 *.bak
 *.tmp

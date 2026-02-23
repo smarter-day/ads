@@ -7,11 +7,12 @@ on:
       - master
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       - name: Checkout repository
@@ -29,10 +30,22 @@ jobs:
       - name: Build and minify
         run: yarn build
 
-      - name: Commit dist folder
+      - name: Upload dist to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_R2_BUCKET: ${{ vars.CLOUDFLARE_R2_BUCKET }}
+          CLOUDFLARE_R2_PREFIX: ${{ vars.CLOUDFLARE_R2_PREFIX }}
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add dist/ -f
-          git diff --staged --quiet || git commit -m "chore: build dist [skip ci]"
-          git push
+          set -euo pipefail
+
+          ENDPOINT_URL="https://${CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          DESTINATION="s3://${CLOUDFLARE_R2_BUCKET}"
+
+          if [ -n "${CLOUDFLARE_R2_PREFIX:-}" ]; then
+            DESTINATION="${DESTINATION}/${CLOUDFLARE_R2_PREFIX#/}"
+          fi
+
+          aws s3 sync dist/ "${DESTINATION}" --delete --endpoint-url "${ENDPOINT_URL}"
