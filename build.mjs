@@ -11,7 +11,8 @@ const imagesSrcDir = new URL("./images/", import.meta.url);
 const imagesDistDir = new URL("./dist/images/", import.meta.url);
 const htmlPath = new URL("./index.html", import.meta.url);
 const IMAGE_CDN_BASE = "https://static-ads.smarter.day/images";
-const IMAGE_VERSION = `v${process.env.BUILD_TIMESTAMP || Date.now()}`;
+const BUILD_VERSION = String(process.env.BUILD_TIMESTAMP || Date.now());
+const IMAGE_VERSION = `v${BUILD_VERSION}`;
 const IMAGE_MAX_DIMENSION = 1920;
 const imageExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".avif"]);
 
@@ -88,6 +89,38 @@ function rewriteConfigImageUrls(configContent) {
   );
 }
 
+function appendBuildVersionToJsUrls(htmlContent) {
+  const appendVersion = (url) => {
+    const separator = url.includes("?") ? "&" : "?";
+    return `${url}${separator}v=${BUILD_VERSION}`;
+  };
+
+  let updated = htmlContent.replace(
+    /(src=["'])([^"']+)(["'])/gi,
+    (fullMatch, prefix, url, suffix) => {
+      const isLocalAsset =
+        url.startsWith("./") || url.startsWith("../") || url.startsWith("/");
+
+      if (!isLocalAsset || url.startsWith("data:") || url.includes("v=")) {
+        return fullMatch;
+      }
+      return `${prefix}${appendVersion(url)}${suffix}`;
+    }
+  );
+
+  updated = updated.replace(
+    /window\.AD_CONFIG_URL\s*=\s*["']([^"']+?\.js(?:\?[^"']*)?)["']/gi,
+    (fullMatch, url) => {
+      if (url.includes("v=")) {
+        return fullMatch;
+      }
+      return `window.AD_CONFIG_URL="${appendVersion(url)}"`;
+    }
+  );
+
+  return updated;
+}
+
 // Create dist directories
 await mkdir(distDir, { recursive: true });
 await mkdir(configsDistDir, { recursive: true });
@@ -141,8 +174,9 @@ const minifiedHtml = await minify(html, {
   minifyCSS: true,
   minifyJS: true,
 });
+const versionedHtml = appendBuildVersionToJsUrls(minifiedHtml);
 
-await writeFile(new URL("./dist/index.html", import.meta.url), minifiedHtml);
+await writeFile(new URL("./dist/index.html", import.meta.url), versionedHtml);
 console.log("Built: dist/index.html");
 
 console.log("\nBuild complete!");
