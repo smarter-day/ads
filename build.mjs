@@ -11,6 +11,7 @@ const imagesSrcDir = new URL("./images/", import.meta.url);
 const imagesDistDir = new URL("./dist/images/", import.meta.url);
 const htmlPath = new URL("./index.html", import.meta.url);
 const IMAGE_CDN_BASE = "https://static-ads.smarter.day/images";
+const IMAGE_VERSION = `v${process.env.BUILD_TIMESTAMP || Date.now()}`;
 const IMAGE_MAX_DIMENSION = 1920;
 const imageExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".avif"]);
 
@@ -33,7 +34,8 @@ async function listFilesRecursively(directoryPath) {
 }
 
 async function buildImages() {
-  await mkdir(imagesDistDir, { recursive: true });
+  const versionedImagesDistDir = join(imagesDistDir.pathname, IMAGE_VERSION);
+  await mkdir(versionedImagesDistDir, { recursive: true });
 
   let sourceExists = true;
   try {
@@ -60,7 +62,7 @@ async function buildImages() {
   for (const sourcePath of sourceImages) {
     const sourceRelativePath = relative(imagesSrcDir.pathname, sourcePath);
     const distRelativePath = sourceRelativePath.replace(/\.[^.]+$/, ".webp");
-    const targetPath = join(imagesDistDir.pathname, distRelativePath);
+    const targetPath = join(versionedImagesDistDir, distRelativePath);
 
     await mkdir(dirname(targetPath), { recursive: true });
 
@@ -72,7 +74,7 @@ async function buildImages() {
       .webp({ quality: 82, effort: 4 })
       .toFile(targetPath);
 
-    console.log(`Built: dist/images/${distRelativePath}`);
+    console.log(`Built: dist/images/${IMAGE_VERSION}/${distRelativePath}`);
   }
 }
 
@@ -81,7 +83,7 @@ function rewriteConfigImageUrls(configContent) {
     /(["'])images\/([^"'?]+\.(?:png|jpe?g|webp|avif))(?:\?[^"']*)?\1/gi,
     (fullMatch, quote, imagePath) => {
       const webpPath = imagePath.replace(/\.[^.]+$/i, ".webp");
-      return `${quote}${IMAGE_CDN_BASE}/${webpPath}${quote}`;
+      return `${quote}${IMAGE_CDN_BASE}/${IMAGE_VERSION}/${webpPath}${quote}`;
     }
   );
 }
